@@ -1,19 +1,28 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClienteModule } from './clientes/clientes.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
-  @Module({
-    imports: [
-      TypeOrmModule.forRoot({
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
         type: 'mongodb',
-        url: 'mongodb+srv://grupoupgradeperu:CUhQCqGo3DG7z4sN@upgradedb.vcn6i.mongodb.net/campania',
+        url: configService.get<string>('MONGODB_URL'),
         useNewUrlParser: true,
         useUnifiedTopology: true,
-        database: 'campania',
+        database: configService.get<string>('MONGODB_DB'),
         synchronize: true,
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
       }),
-      ClienteModule
-    ],
-  })
-  export class AppModule {}
+    }),
+
+    ClienteModule,
+  ],
+})
+export class AppModule {}
