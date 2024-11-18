@@ -22,4 +22,7 @@ export class Cliente {
 
   @Column()
   profesion: string;
+
+  @Column()
+  cargo: string;
 }

@@ -24,5 +24,9 @@ export class CreateClienteDto {
   @IsNotEmpty()
   @IsString()
   profesion: string;
+
+  @IsNotEmpty()
+  @IsString()
+  cargo: string;
 }
 
